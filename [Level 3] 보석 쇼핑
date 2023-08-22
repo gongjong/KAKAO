@@ -1,0 +1,57 @@
+#시도 1차 -> 시간 초과와 런타입 에러가 발생
+
+from collections import Counter as counter
+
+def solution(gems):
+    answer = []
+    gem = len(counter(gems))
+    gap = float('inf')
+    
+    for i in range(len(gems) - gem):
+        j = i
+        basket = set()
+        while j < len(gems):
+            basket.add(gems[j])
+            if len(basket) == gem:
+                if j-i < gap:
+                    gap = j-i
+                    answer = [[i+1, j+1]]
+                elif j-i == gap:
+                    answer.append([i+1, j+1])
+                break
+            j += 1
+    
+    answer.sort()
+    return answer[0]
+
+
+#시도 2차 -> 투 포인터가 좋다는걸 한번더 알아차림 괜히 큐랑 스택 사용할랬다가 머리가 부서질뻔함
+# 홍대병 없이 검증된 걸로 하자
+def solution(gems):
+    answer = [0, len(gems)]
+    left, right = 0, 0
+    limit = len(set(gems))
+    dic = {gems[0] : 1}
+    
+    while left < len(gems) and right < len(gems):
+        if len(dic) == limit:
+            if answer[1]-answer[0] > right - left:
+                answer = [left, right]
+            else:
+                dic[gems[left]] -= 1
+                if dic[gems[left]] == 0:
+                    del dic[gems[left]]
+                left += 1
+        else:
+            right += 1
+            if right == len(gems):
+                break
+            if gems[right] in dic:
+                dic[gems[right]] += 1
+            else:
+                dic[gems[right]] = 1
+                    
+    
+    
+    
+    return [answer[0]+1, answer[1]+1]
